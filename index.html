@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>¿Cuánto sabes de IA?</title>
+  <style>
+    body{margin:0;font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#0b1230;color:#f1f5f9;display:flex;flex-direction:column;align-items:center;min-height:100vh;padding:20px}
+    h1{margin:10px 0;font-size:24px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:12px;width:100%;max-width:900px;margin-top:20px}
+    .envelope{background:#1e293b;padding:20px;border-radius:12px;text-align:center;cursor:pointer;transition:.2s;box-shadow:0 4px 12px #0006;}
+    .envelope:hover{background:#334155;transform:translateY(-2px)}
+    .overlay{position:fixed;inset:0;background:#000a;display:none;place-items:center;padding:20px}
+    .card{background:#0f172a;border-radius:14px;padding:20px;max-width:600px;width:100%;box-shadow:0 8px 40px #000c}
+    .question{font-size:18px;font-weight:700;margin-bottom:14px}
+    .options{display:grid;gap:10px}
+    .option{padding:12px;border-radius:10px;background:#1e293b;border:1px solid #334155;cursor:pointer}
+    .option.correct{background:#14532d;border-color:#16a34a}
+    .option.wrong{background:#7f1d1d;border-color:#dc2626}
+    .close{margin-top:14px;background:#334155;color:#fff;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <h1>📩 Panel de preguntas: IA en la formación docente</h1>
+  <p>Pulsa en un sobre para abrir una pregunta. Hay 50 en total.</p>
+  <div class="grid" id="grid"></div>
+
+  <div class="overlay" id="overlay">
+    <div class="card">
+      <div class="question" id="qText"></div>
+      <div class="options" id="qOptions"></div>
+      <button class="close" onclick="closeOverlay()">Cerrar</button>
+    </div>
+  </div>
+
+<script>
+const QUESTIONS=[
+  {q:"¿Qué organismo publicó en 2024 la guía sobre IA en educación?",a:["UNESCO","INTEF (España)","OCDE"],c:1},
+  {q:"El MRCDD (2022) subraya…",a:["reemplazar docentes","uso ético y protección de datos","solo en Secundaria"],c:1},
+  {q:"Según UNESCO (2024), ¿cuál NO es un aspecto?",a:["Ética de la IA","Marketing educativo","Fundamentos y aplicaciones"],c:1},
+  {q:"Niveles del marco de la UNESCO para docentes:",a:["Adquirir–Profundizar–Crear","Básico–Intermedio–Experto","Explorar–Implementar–Escalar"],c:0},
+  {q:"La IA en formación docente debe…",a:["apoyar con transparencia","sustituir a la persona","usar datos sin permiso"],c:0},
+  {q:"La Ley de IA de la UE considera de alto riesgo…",a:["evaluar el rendimiento del alumnado","crear fichas","hacer presentaciones"],c:0},
+  {q:"Transparencia recomendada en trabajos:",a:["informar y referenciar IA usada","ocultar prompts","prohibir citas"],c:0},
+  {q:"Para tutores/dinamizadores se indica…",a:["verificar fuentes y revisar retroalimentación","compartir datos sensibles","dejar sin revisión"],c:0},
+  {q:"Para participantes la IA…",a:["apoya y se declara su uso","sustituye trabajo personal","pide datos privados"],c:0},
+  {q:"Sostenibilidad:",a:["priorizar IA eficiente y ODS","ignorar consumo energético","usar siempre modelos gigantes"],c:0}
+];
+while(QUESTIONS.length<50){
+  QUESTIONS.push({q:"Pregunta extra #"+QUESTIONS.length,a:["Opción A","Opción B","Opción C"],c:0});
+}
+
+const grid=document.getElementById('grid');
+for(let i=1;i<=50;i++){
+  const div=document.createElement('div');
+  div.className='envelope';
+  div.textContent='📩 '+i;
+  div.onclick=()=>openQ(i-1,div);
+  grid.appendChild(div);
+}
+
+const overlay=document.getElementById('overlay');
+const qText=document.getElementById('qText');
+const qOptions=document.getElementById('qOptions');
+function openQ(idx,div){
+  const it=QUESTIONS[idx];
+  qText.textContent=it.q;
+  qOptions.innerHTML='';
+  it.a.forEach((opt,i)=>{
+    const b=document.createElement('div');
+    b.className='option';
+    b.textContent=opt;
+    b.onclick=()=>{
+      if(i===it.c){b.classList.add('correct');} else {b.classList.add('wrong');}
+      [...qOptions.children].forEach(o=>o.onclick=null);
+    };
+    qOptions.appendChild(b);
+  });
+  overlay.style.display='grid';
+  div.style.pointerEvents='none'; div.style.opacity='.5';
+}
+function closeOverlay(){overlay.style.display='none';}
+</script>
+</body>
+</html>
